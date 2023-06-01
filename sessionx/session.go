@@ -1,11 +1,17 @@
 package sessionx
 
-import "github.com/aws/aws-sdk-go/aws/session"
+import (
+	"context"
 
-// New returns a session based on sso credentials from ~/.aws/config
-func New(profile string) (*session.Session, error) {
-	return session.NewSessionWithOptions(session.Options{
-		SharedConfigState: session.SharedConfigEnable,
-		Profile:           profile,
-	})
+	"github.com/aws/aws-sdk-go-v2/aws"
+	"github.com/aws/aws-sdk-go-v2/config"
+)
+
+// New returns an aws config based on sso credentials from a profile in ~/.aws/config
+func New(ctx context.Context, profile, region string) (aws.Config, error) {
+	return config.LoadDefaultConfig(
+		ctx,
+		config.WithSharedConfigProfile(profile),
+		config.WithRegion(region),
+	)
 }
